@@ -1,0 +1,6 @@
+https://arxiv.org/pdf/2103.04682.pdf
+https://seart-ghs.si.usi.ch/
+
+searched for repos with at least 20 000 stars, at least 1000 commits and at least 100 000 lines of code.
+
+resulted in 31 repos

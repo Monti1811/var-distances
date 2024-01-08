@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact name="fasterxml_jackson_core">
+    <output-path>$PROJECT_DIR$/out/artifacts/fasterxml_jackson_core</output-path>
+    <root id="root">
+      <element id="library" level="project" name="fasterxml.jackson.core" />
+    </root>
+  </artifact>
+</component>

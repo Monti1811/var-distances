@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="fasterxml_jackson_core_databind">
+    <output-path>$PROJECT_DIR$/out/artifacts/fasterxml_jackson_core_databind</output-path>
+    <root id="archive" name="fasterxml_jackson_core_databind.jar">
+      <element id="library" level="project" name="fasterxml.jackson.core.databind" />
+    </root>
+  </artifact>
+</component>

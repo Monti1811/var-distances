@@ -1,0 +1,27 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="distancecalculator:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/distancecalculator_jar</output-path>
+    <root id="archive" name="distancecalculator.jar">
+      <element id="module-output" name="distancecalculator" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../untitled/javaparser-core-3.25.7.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../untitled/json-20231013.jar" path-in-jar="/" />
+      <element id="library" level="module" name="JUnit5.8.1" module-name="distancecalculator" />
+      <element id="library" level="project" name="ejlchina.data.gson" />
+      <element id="file-copy" path="$PROJECT_DIR$/../untitled/javaparser-core-3.25.7.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/../untitled/json-20231013.jar" />
+      <element id="library" level="module" name="JUnit4" module-name="distancecalculator" />
+      <element id="archive" name="jackson.jar" />
+      <element id="library" level="project" name="fasterxml.jackson.core" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/out/artifacts/fasterxml_jackson_core/jackson-core-2.13.3.jar" path-in-jar="/" />
+      <element id="artifact" artifact-name="fasterxml_jackson_core" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/out/artifacts/fasterxml_jackson_core_databind/fasterxml_jackson_core_databind.jar" path-in-jar="/" />
+      <element id="library" level="project" name="fasterxml.jackson.core.databind" />
+      <element id="archive" name="fasterxml_jackson_core_databind.jar">
+        <element id="library" level="project" name="fasterxml.jackson.core.databind" />
+      </element>
+      <element id="archive" name="jackson_databind.jar" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/out/artifacts/fasterxml_jackson_core_databind/jackson-databind-2.13.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/out/artifacts/fasterxml_jackson_core_databind/jackson-annotations-2.13.3.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
