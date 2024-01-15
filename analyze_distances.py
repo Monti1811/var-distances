@@ -31,7 +31,8 @@ for repo in repos:
     # Run distancecalculator.jar for each repo
     if not repo in json_results:
         print("Running distancecalculator.jar for " + repo)
-        os.system("\"C:\\Program Files\\Java\\jdk-17.0.4.1\\bin\\java.exe\" -jar out/artifacts/distancecalculator_jar/distancecalculator.jar 1 " + BASE_PATH_TO_REPOS + repo + " " + repo)
+        #os.system("\"C:\\Program Files\\Java\\jdk-17.0.4.1\\bin\\java.exe\" -jar out/artifacts/distancecalculator_jar/distancecalculator.jar 1 " + BASE_PATH_TO_REPOS + repo + " " + repo)
+        os.system("\"C:\\Program Files\\Java\\jdk-17.0.4.1\\bin\\java.exe\" -jar distancecalculator.jar 1 " + BASE_PATH_TO_REPOS + repo + " " + repo)
 
 # Set the total results
 json_results = json.load(io.open('results.json', 'r'))
