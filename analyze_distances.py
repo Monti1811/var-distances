@@ -36,7 +36,10 @@ for repo in repos:
 
 # Set the total results
 json_results = json.load(io.open('results.json', 'r'))
-json_results.pop("total")
+# If total exists, remove it
+if "total" in json_results:
+    json_results.pop("total")
+
 total_results = {}
 total_declarations = 0
 total_distance = 0

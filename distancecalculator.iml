@@ -56,5 +56,14 @@
     <orderEntry type="library" exported="" name="fasterxml.jackson.core" level="project" />
     <orderEntry type="library" exported="" name="fasterxml.jackson.core.databind" level="project" />
     <orderEntry type="library" exported="" name="Python 3.8 interpreter library" level="application" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/annotations/24.0.0/annotations-24.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

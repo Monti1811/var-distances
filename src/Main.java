@@ -28,7 +28,7 @@ public class Main {
 
     public static String getGitHubToken() {
         // Replace 'your_github_token' with your actual GitHub personal access token
-        return "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";
+        return "your_github_token";
     }
 
     public static String searchRepositories(String query, String token) throws Exception {

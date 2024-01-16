@@ -10,6 +10,8 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.*;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class VariableUsageDistance {
 
@@ -17,11 +19,32 @@ public class VariableUsageDistance {
     private int minDistance = 5;
 
     public VariableUsageDistance(String code) {
-        this.code = code;
+        // Remove empty lines and comments
+        this.code = removeEmptyLinesAndComments(code);
+    }
+
+    public VariableUsageDistance(String code, boolean removeEmptyLinesAndComments) {
+        // Remove empty lines and comments
+        if (removeEmptyLinesAndComments) {
+            this.code = removeEmptyLinesAndComments(code);
+        } else {
+            this.code = code;
+        }
     }
 
     public VariableUsageDistance(String code, int minDistance) {
-        this.code = code;
+        // Remove empty lines and comments
+        this.code = removeEmptyLinesAndComments(code);
+        this.minDistance = minDistance;
+    }
+
+    public VariableUsageDistance(String code, int minDistance, boolean removeEmptyLinesAndComments) {
+        // Remove empty lines and comments
+        if (removeEmptyLinesAndComments) {
+            this.code = removeEmptyLinesAndComments(code);
+        } else {
+            this.code = code;
+        }
         this.minDistance = minDistance;
     }
 
@@ -163,6 +186,10 @@ public class VariableUsageDistance {
             IfStmt ifStmt = statement.asIfStmt();
             Statement thenStmt = ifStmt.getThenStmt();
             Statement elseStmt = ifStmt.getElseStmt().orElse(null);
+            Expression condition = ifStmt.getCondition();
+            condition.findAll(NameExpr.class).forEach(nameExpr -> {
+                addToMap(usages, nameExpr.getNameAsString(), (double) nameExpr.getBegin().get().line);
+            });
             if (thenStmt.isBlockStmt()) {
                 thenStmt.asBlockStmt().getStatements().forEach(s -> searchBody(usages, s));
             } else {
@@ -221,6 +248,21 @@ public class VariableUsageDistance {
         } else {
             map.put(key, new ArrayList<>(Collections.singletonList(value)));
         }
+    }
+
+    public String removeEmptyLinesAndComments(String code) {
+        // Remove single-line comments
+        code = code.replaceAll("//.*", "");
+
+        // Remove multi-line comments
+        Pattern pattern = Pattern.compile("/\\*.*?\\*/", Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(code);
+        code = matcher.replaceAll("");
+
+        // Remove empty lines
+        code = code.replaceAll("(?m)^[ \t]*\r?\n", "");
+
+        return code;
     }
 
 }

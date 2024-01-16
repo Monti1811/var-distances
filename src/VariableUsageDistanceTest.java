@@ -17,6 +17,80 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class VariableUsageDistanceTest {
 
     @Test
+    void calculateDistanceEmptyLines() {
+        String code =
+        """
+        public class Test {
+            public void test() {
+                int a = 1;
+                int b = 2;
+                
+                
+                
+                
+                b = a;
+            };
+            void fun(int a, int b) {};
+        };
+        """;
+
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1);
+        DistanceResults values = calculator.calculateDistance();
+        assertEquals(1, values.distances.size());
+        assertEquals(1.0, values.distances.get("2.0"));
+    }
+
+    @Test
+    void calculateDistanceCommentEmptyLines() {
+        String code =
+                """
+                 public class Test {
+                     public void test() {
+                         int a = 1;
+                         int b/*one line test */ = 2;
+ 
+                         // test
+ 
+ 
+                         if (a == 1)/*
+                             
+                             double test
+                             
+                             */
+                             b = b + 1;
+                          else
+                             a = a + 1;
+                          
+                         
+                     };
+                     void fun(int a, int b) {};
+                 };
+                 """;
+
+        String trimmedCode =
+                """
+                public class Test {
+                    public void test() {
+                        int a = 1;
+                        int b = 2;
+                        if (a == 1)
+                            b = b + 1;
+                         else
+                            a = a + 1;
+                    };
+                    void fun(int a, int b) {};
+                };
+                """;
+
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1);
+        DistanceResults values = calculator.calculateDistance();
+        assertEquals(2, values.distances.size());
+        assertEquals(2.0, values.distances.get("2.0"));
+        assertEquals(1.0, values.distances.get("5.0"));
+    }
+
+
+    @Test
     void calculateDistance() {
         String code =
         """
@@ -75,7 +149,7 @@ class VariableUsageDistanceTest {
 
         assertEquals(4, values.distances.size());
         assertEquals(3.0, values.distances.get("1.0"));
-        assertEquals(2.0, values.distances.get("2.0"));
+        assertEquals(3.0, values.distances.get("2.0"));
         assertEquals(2.0, values.distances.get("3.0"));
         assertEquals(2.0, values.distances.get("5.0"));
 
@@ -106,7 +180,7 @@ class VariableUsageDistanceTest {
 
         assertEquals(4, values2.distances.size());
         assertEquals(3.0, values2.distances.get("1.0"));
-        assertEquals(2.0, values2.distances.get("2.0"));
+        assertEquals(3.0, values2.distances.get("2.0"));
         assertEquals(2.0, values2.distances.get("3.0"));
         assertEquals(2.0, values2.distances.get("5.0"));
 
@@ -519,4 +593,53 @@ class VariableUsageDistanceTest {
 
 
     }
+
+    @Test
+    void testRemovingLines() throws IOException {
+        String code =
+                """
+                public class Test {
+                    public void test() {
+                        int a = 1;
+                        int b/*one line test */ = 2;
+
+                        // test
+
+
+                        if (a == 1)/*
+                            
+                            double test
+                            
+                            */
+                            b = b + 1;
+                         else
+                            a = a + 1;
+                         
+                        
+                    };
+                    void fun(int a, int b) {};
+                };
+                """;
+
+        String trimmedCode =
+                """
+                public class Test {
+                    public void test() {
+                        int a = 1;
+                        int b = 2;
+                        if (a == 1)
+                            b = b + 1;
+                         else
+                            a = a + 1;
+                    };
+                    void fun(int a, int b) {};
+                };
+                """;
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1);
+        String newCode = calculator.removeEmptyLinesAndComments(code);
+
+        assertEquals(trimmedCode, newCode);
+    }
+
+
 }
