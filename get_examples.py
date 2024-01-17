@@ -21,7 +21,7 @@ for item in repos_json["items"]:
         os.system("git clone " + GITHUB_BASE_ADDRESS + repo + GITHUB_END_ADDRESS + " " + BASE_PATH_TO_REPOS + name)
 
 
-repo = "elasticsearch/server"
+repo = "elasticsearch/server/src/main"
 
 # Structure of find_examples.json:
 # key = distance
