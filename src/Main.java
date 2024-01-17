@@ -140,8 +140,8 @@ public class Main {
         boolean all_zero = true;
         for (Map.Entry<Integer, List<Integer>> entry : get_examples.entrySet()) {
             List<Integer> valuesListEntry = entry.getValue();
-            for (int i = 0; i < valuesListEntry.size(); i++) {
-                if (valuesListEntry.get(i) > 0) {
+            for (Integer integer : valuesListEntry) {
+                if (integer > 0) {
                     all_zero = false;
                     break;
                 }
@@ -195,7 +195,7 @@ public class Main {
             } else if (file.getName().endsWith(".java")) {
                 try {
                     String fileContent = readFileContent(file);
-                    String path = file.getAbsolutePath();
+                    String path = file.getAbsolutePath().substring(26);
                     findExample(file.getName(), fileContent, path);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -255,8 +255,9 @@ public class Main {
                 all_examples.put("examples", examples);
                 all_examples.put("double_declaration_examples", double_declaration_examples);
                 writeJsonToFile("examples.json", all_examples);
-                return;
+
             }
+            return;
         } else if (args.length > 1 && args[1] != null && args[2] != null) {
             distance = Integer.parseInt(args[0]);
             localDirectory = args[1];

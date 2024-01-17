@@ -749,5 +749,29 @@ class VariableUsageDistanceTest {
 
     }
 
+    @Test
+    void testFn2() {
+        String code = """
+                public class Test {
+                    public int hashCode() {
+                            int result = Objects.hash(originalIndices, indexFilter, nowInMillis, runtimeFields);
+                            result = 31 * result + shardIds.hashCode();
+                            result = 31 * result + Arrays.hashCode(fields);
+                            result = 31 * result + Arrays.hashCode(filters);
+                            result = 31 * result + Arrays.hashCode(allowedTypes);
+                            return result;
+                        }
+                    }
+                """;
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1, false);
+
+        Map<Integer, List<Integer>> get_examples = new HashMap<>();
+        get_examples.put(1, Arrays.asList(0, 1, 0, 1));
+        DistanceResults values = calculator.calculateDistance(get_examples);
+
+        assertEquals(0, values.double_declaration_examples.size());
+
+    }
+
 
 }

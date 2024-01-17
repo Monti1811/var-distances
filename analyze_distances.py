@@ -63,7 +63,7 @@ for repo in json_results:
         else:
             total_double_declarations_results[key] += value
     total_double_declarations += json_results[repo]["values"]["amountDoubleDeclarations"]
-    total_double_declarations_distance += json_results[repo]["values"]["totalDoubleDistance"]
+    total_double_declarations_distance += json_results[repo]["values"]["totalDoubleDeclarationsDistance"]
 
 # Sort the total_results by the key (distance), which is a string
 total_results = dict(sorted(total_results.items(), key=lambda item: float(item[0])))
@@ -86,6 +86,7 @@ for key, value in total_results.items():
     if counter > total_declarations / 2:
         json_results["total"]["values"]["medianDistance"] = float(key)
         break
+counter = 0
 for key, value in total_double_declarations_results.items():
     counter += value
     if counter > total_double_declarations / 2:

@@ -201,7 +201,7 @@ public class VariableUsageDistance {
 
     private boolean isDeclarationAfterDeclaration(Double declarationFirst, Double declarationSecond, List<Double> usageLines) {
         for (Double usageLine : usageLines) {
-            if (declarationFirst < usageLine && usageLine < declarationSecond) {
+            if (declarationFirst <= usageLine && usageLine < declarationSecond) {
                 return false;
             }
         }
