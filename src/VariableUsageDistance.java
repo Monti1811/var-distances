@@ -49,12 +49,30 @@ public class VariableUsageDistance {
     }
 
     public DistanceResults calculateDistance() {
+        return calculateDistance(new HashMap<>(0));
+    }
+
+    public DistanceResults calculateDistance(Map<Integer, List<Integer>> get_examples) {
+
+        // Structure of Map in get_examples:
+        // key = distance
+        // value = array of size 4
+            // [0] amount of times that are ignored before saving examples,
+            // [1] amount of examples to save,
+            // [2] amount of times that are ignored before saving double declaration examples,
+            // [3] amount of double declaration examples to save
 
         double amountDeclarations = 0.0;
         double amountLongDeclarations = 0.0;
         double totalDistance = 0.0;
         double averageDistance = 0.0;
+        double amountDoubleDeclarations = 0.0;
+        double totalDoubleDistance = 0.0;
+        double averageDoubleDistance = 0.0;
         Map<String, Double> distances = new HashMap<>();
+        Map<String, Double> doubleDeclarations = new HashMap<>();
+        Map<Integer, List<Integer>> examples = new HashMap<>();
+        Map<Integer, List<Integer>> double_declaration_examples = new HashMap<>();
         CompilationUnit cu;
         try {
             cu = StaticJavaParser.parse(this.code);
@@ -85,10 +103,12 @@ public class VariableUsageDistance {
                 List<Double> usageLines = usages.getOrDefault(variableName, new ArrayList<>());
                 for (Double usageLine : usageLines) {
                     double minDistance = Double.MAX_VALUE;
+                    double chosenDeclarationLine = 0;
                     for (Double declarationLine : declarationLines) {
                         double distance = usageLine - declarationLine;
                         if (distance > 0 && distance < minDistance) {
                             minDistance = distance;
+                            chosenDeclarationLine = declarationLine;
                         }
                     }
                     if (minDistance >= this.minDistance && minDistance != Double.MAX_VALUE) {
@@ -100,18 +120,92 @@ public class VariableUsageDistance {
                         if (minDistance >= this.minDistance) {
                             amountLongDeclarations++;
                         }
+                        if (!get_examples.isEmpty()) {
+                            Integer minDistanceInt = (int) minDistance;
+                            if (get_examples.containsKey(minDistanceInt) && !get_examples.get(minDistanceInt).isEmpty()) {
+                                List<Integer> distance_example = get_examples.get((int) minDistance);
+                                if (distance_example.get(0) > 0) {
+                                    // Reduce it by 1
+                                    Integer val = distance_example.get(0) - 1;
+                                    distance_example.set(0, val);
+                                } else if (distance_example.get(1) > 0) {
+                                    // Add it to the examples map with the distance as the key and the line numbers as the value
+                                    List<Integer> old_values = examples.getOrDefault(minDistanceInt, new ArrayList<>());
+                                    old_values.addAll(Arrays.asList((int) chosenDeclarationLine, usageLine.intValue()));
+                                    examples.put((int) minDistance, old_values);
+                                    // Reduce it by 1
+                                    Integer val = distance_example.get(1) - 1;
+                                    distance_example.set(1, val);
+                                }
+                                get_examples.put(minDistanceInt, distance_example);
+                            }
+                        }
                     }
                 }
             }
-
+            // Search double declarations so a declaration after another declaration with no usage in between
+            for (Map.Entry<String, List<Double>> entry : declarations.entrySet()) {
+                String variableName = entry.getKey();
+                List<Double> declarationLines = entry.getValue();
+                List<Double> usageLines = usages.getOrDefault(variableName, new ArrayList<>());
+                for (int i = 0; i < declarationLines.size() - 1; i++) {
+                    Double declarationFirst = declarationLines.get(i);
+                    Double declarationSecond = declarationLines.get(i + 1);
+                    if (isDeclarationAfterDeclaration(declarationFirst, declarationSecond, usageLines)) {
+                        double distance = declarationSecond - declarationFirst;
+                        if (distance >= this.minDistance) {
+                            String distanceAsString = String.valueOf(distance);
+                            doubleDeclarations.put(distanceAsString, doubleDeclarations.getOrDefault(distanceAsString, 0.0) + 1);
+                            amountDoubleDeclarations++;
+                            totalDoubleDistance += distance;
+                            if (!get_examples.isEmpty()) {
+                                Integer key = (int) distance;
+                                if (get_examples.containsKey(key) && !get_examples.get(key).isEmpty()) {
+                                    List<Integer> distance_example = get_examples.get(key);
+                                    if (distance_example.get(2) > 0) {
+                                        // Reduce it by 1
+                                        Integer val = distance_example.get(2) - 1;
+                                        distance_example.set(2, val);
+                                    } else if (distance_example.get(3) > 0) {
+                                        // Add it to the examples map with the distance as the key and the line numbers as the value
+                                        List<Integer> old_values = double_declaration_examples.getOrDefault(key, new ArrayList<>());
+                                        old_values.addAll(Arrays.asList(declarationFirst.intValue(), declarationSecond.intValue()));
+                                        double_declaration_examples.put(key, old_values);
+                                        // Reduce it by 1
+                                        Integer val = distance_example.get(3) - 1;
+                                        distance_example.set(3, val);
+                                    }
+                                    get_examples.put(key, distance_example);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
+
+
 
         if (amountDeclarations == 0) {
             return new DistanceResults();
         }
-        averageDistance = totalDistance / amountDeclarations;
+        if (get_examples.isEmpty()) {
+            averageDistance = totalDistance / amountDeclarations;
+            return new DistanceResults(amountDeclarations, amountLongDeclarations, totalDistance, averageDistance, distances, amountDoubleDeclarations, totalDoubleDistance, averageDoubleDistance, doubleDeclarations);
+        } else {
+            return new DistanceResults(examples, double_declaration_examples);
+        }
+    }
 
-        return new DistanceResults(amountDeclarations, amountLongDeclarations, totalDistance, averageDistance, distances);
+
+
+    private boolean isDeclarationAfterDeclaration(Double declarationFirst, Double declarationSecond, List<Double> usageLines) {
+        for (Double usageLine : usageLines) {
+            if (declarationFirst < usageLine && usageLine < declarationSecond) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void searchBody(Map<String, List<Double>> usages, Statement statement) {

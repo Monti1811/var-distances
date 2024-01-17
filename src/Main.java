@@ -8,10 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Main {
 
@@ -19,10 +16,18 @@ public class Main {
     static double longDistanceDeclarations = 0;
     static double totalDistance = 0;
     static double averageDistance = 0;
+    static double amountDoubleDeclarations = 0;
+    static double totalDoubleDistance = 0;
+    static double averageDoubleDistance = 0;
+
+    static Map<String, List<Integer>> examples = new HashMap<>();
+    static Map<String, List<Integer>> double_declaration_examples = new HashMap<>();
+    static Map<Integer, List<Integer>> get_examples = new HashMap<>(0);
 
     static int distance = 1;
 
     static Map<String, Double> distances = new HashMap<>();
+    static Map<String, Double> doubleDeclarations = new HashMap<>();
 
     private static final String GITHUB_API_URL = "https://api.github.com/graphql";
 
@@ -111,11 +116,55 @@ public class Main {
         longDistanceDeclarations += values.amountLongDeclarations;
         totalDistance += values.totalDistance;
         averageDistance += values.averageDistance;
+        amountDoubleDeclarations += values.amountDoubleDeclarations;
+        totalDoubleDistance += values.totalDoubleDistance;
+        averageDoubleDistance += values.averageDoubleDistance;
         for (Map.Entry<String, Double> entry : values.distances.entrySet()) {
             if (distances.containsKey(entry.getKey())) {
                 distances.put(entry.getKey(), distances.get(entry.getKey()) + entry.getValue());
             } else {
                 distances.put(entry.getKey(), entry.getValue());
+            }
+        }
+        for (Map.Entry<String, Double> entry : values.doubleDeclarations.entrySet()) {
+            if (doubleDeclarations.containsKey(entry.getKey())) {
+                doubleDeclarations.put(entry.getKey(), doubleDeclarations.get(entry.getKey()) + entry.getValue());
+            } else {
+                doubleDeclarations.put(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    private static void findExample(String fileName, String fileContent, String path) {
+        // Check if all entries of get_examples are 0, if yes stop
+        boolean all_zero = true;
+        for (Map.Entry<Integer, List<Integer>> entry : get_examples.entrySet()) {
+            List<Integer> valuesListEntry = entry.getValue();
+            for (int i = 0; i < valuesListEntry.size(); i++) {
+                if (valuesListEntry.get(i) > 0) {
+                    all_zero = false;
+                    break;
+                }
+            }
+        }
+        if (all_zero) {
+            return;
+        }
+
+        VariableUsageDistance calculator = new VariableUsageDistance(fileContent, distance, false);
+        DistanceResults values = calculator.calculateDistance(get_examples);
+        for (Map.Entry<Integer, List<Integer>> entry : values.examples.entrySet()) {
+            List<Integer> valuesListEntry = entry.getValue();
+            for (int i = 0; i < valuesListEntry.size()-1; i = i + 2) {
+                String entry_name = path + " Distance: " + entry.getKey() + " Line: " + entry.getValue().get(i) + " to " + entry.getValue().get(i+1);
+                examples.put(entry_name, Arrays.asList(entry.getValue().get(i), entry.getValue().get(i+1)));
+            }
+        }
+        for (Map.Entry<Integer, List<Integer>> entry : values.double_declaration_examples.entrySet()) {
+            List<Integer> valuesListEntry = entry.getValue();
+            for (int i = 0; i < valuesListEntry.size()-1; i = i + 2) {
+                String entry_name = path + " Distance: " + entry.getKey() + " Line: " + entry.getValue().get(i) + " to " + entry.getValue().get(i + 1);
+                double_declaration_examples.put(entry_name, Arrays.asList(entry.getValue().get(i), entry.getValue().get(i+1)));
             }
         }
     }
@@ -131,6 +180,23 @@ public class Main {
                 try {
                     String fileContent = readFileContent(file);
                     analyzeFile(file.getName(), fileContent);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private static void findExamples(File folder) {
+        for (File file : folder.listFiles()) {
+            if (file.isDirectory()) {
+                // Recursively analyze files in subdirectories
+                findExamples(file);
+            } else if (file.getName().endsWith(".java")) {
+                try {
+                    String fileContent = readFileContent(file);
+                    String path = file.getAbsolutePath();
+                    findExample(file.getName(), fileContent, path);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -158,10 +224,41 @@ public class Main {
         String localDirectory = null;
         String name = "no_name";
 
-        distance = Integer.parseInt(args[0]);
         int max_length = 10; // repositories.length()
 
-        if (args.length > 1 && args[1] != null && args[2] != null) {
+        if (Objects.equals(args[0], "ex")) {
+            localDirectory = args[1];
+            // Parse the json file of args[2] and add the examples to get_examples
+            String jsonFilePath = args[2]; // Replace with your JSON file path
+            Object jsonFile = readJsonFromFile(jsonFilePath);
+            // Convert the linked hash map to a Map of lists
+            Map<String, Object> jsonObject;
+            if (jsonFile instanceof Map) {
+                jsonObject = (Map<String, Object>) jsonFile;
+            } else {
+                jsonObject = new HashMap<>();
+            }
+            for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
+                List<Integer> examplesListEntry = new ArrayList<>();
+                Integer key = Integer.parseInt(entry.getKey());
+                Map<String, Integer> values = (Map<String, Integer>) entry.getValue();
+                for (Map.Entry<String, Integer> value : values.entrySet()) {
+                    examplesListEntry.add(value.getValue());
+                }
+                get_examples.put(key, examplesListEntry);
+            }
+
+            File folder = new File(localDirectory);
+            if (folder.exists() && folder.isDirectory()) {
+                findExamples(folder);
+                Map<String, Object> all_examples = new HashMap<>();
+                all_examples.put("examples", examples);
+                all_examples.put("double_declaration_examples", double_declaration_examples);
+                writeJsonToFile("examples.json", all_examples);
+                return;
+            }
+        } else if (args.length > 1 && args[1] != null && args[2] != null) {
+            distance = Integer.parseInt(args[0]);
             localDirectory = args[1];
             name = args[2];
             File folder = new File(localDirectory);
@@ -207,21 +304,26 @@ public class Main {
         results.put("longDistanceDeclarations", longDistanceDeclarations);
         results.put("totalDistance", totalDistance);
         results.put("averageDistance", totalDistance / totalDeclarations);
+        results.put("amountDoubleDeclarations", amountDoubleDeclarations);
+        results.put("totalDoubleDeclarationsDistance", totalDoubleDistance);
+        results.put("averageDoubleDeclarationsDistance", totalDoubleDistance / amountDoubleDeclarations);
 
         resultsMap.put("values", results);
         // Sort the distances map by length which is a string of the length
         Map<String, Double> sortedDistances = new TreeMap<>(Comparator.comparingDouble(Double::parseDouble));
         sortedDistances.putAll(distances);
+        Map<String, Double> sortedDoubleDeclarationDistances = new TreeMap<>(Comparator.comparingDouble(Double::parseDouble));
+        sortedDoubleDeclarationDistances.putAll(doubleDeclarations);
 
         resultsMap.put("distances", sortedDistances);
+        resultsMap.put("doubleDeclarations", sortedDoubleDeclarationDistances);
         jsonObject.put(name, resultsMap);
 
         writeJsonToFile(jsonFilePath, jsonObject);
 
 
         System.out.println("Analyzed repository: "+ name + ", Total Declarations: "
-            + totalDeclarations + ", Declarations that had their first reference after " + distance
-            + ": " + longDistanceDeclarations);
+            + totalDeclarations + ", Total Double Declarations: " + amountDoubleDeclarations);
 
 
 

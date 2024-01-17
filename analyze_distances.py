@@ -43,6 +43,9 @@ if "total" in json_results:
 total_results = {}
 total_declarations = 0
 total_distance = 0
+total_double_declarations_results = {}
+total_double_declarations = 0
+total_double_declarations_distance = 0
 for repo in json_results:
     # Add the results of the repo to the total results
     for key, value in json_results[repo]["distances"].items():
@@ -53,8 +56,18 @@ for repo in json_results:
     total_declarations += json_results[repo]["values"]["totalDeclarations"]
     total_distance += json_results[repo]["values"]["totalDistance"]
 
+    # Add the results of the repo to the total_double_declarations_results
+    for key, value in json_results[repo]["doubleDeclarations"].items():
+        if key not in total_double_declarations_results:
+            total_double_declarations_results[key] = value
+        else:
+            total_double_declarations_results[key] += value
+    total_double_declarations += json_results[repo]["values"]["amountDoubleDeclarations"]
+    total_double_declarations_distance += json_results[repo]["values"]["totalDoubleDistance"]
+
 # Sort the total_results by the key (distance), which is a string
 total_results = dict(sorted(total_results.items(), key=lambda item: float(item[0])))
+total_double_declarations_results = dict(sorted(total_double_declarations_results.items(), key=lambda item: float(item[0])))
 
 json_results["total"] = {}
 json_results["total"]["distances"] = total_results
@@ -62,12 +75,21 @@ json_results["total"]["values"] = {}
 json_results["total"]["values"]["totalDeclarations"] = total_declarations
 json_results["total"]["values"]["totalDistance"] = total_distance
 json_results["total"]["values"]["averageDistance"] = total_distance / total_declarations
+json_results["total"]["doubleDeclarations"] = total_double_declarations_results
+json_results["total"]["values"]["totalDoubleDeclarations"] = total_double_declarations
+json_results["total"]["values"]["totalDoubleDeclarationsDistance"] = total_double_declarations_distance
+json_results["total"]["values"]["averageDoubleDeclarationsDistance"] = total_double_declarations_distance / total_double_declarations
 # Median distance
 counter = 0
 for key, value in total_results.items():
     counter += value
     if counter > total_declarations / 2:
         json_results["total"]["values"]["medianDistance"] = float(key)
+        break
+for key, value in total_double_declarations_results.items():
+    counter += value
+    if counter > total_double_declarations / 2:
+        json_results["total"]["values"]["medianDoubleDeclarationsDistance"] = float(key)
         break
 # Standard error of average distance
 json_results["total"]["values"]["standardError"] = (total_distance / total_declarations) / (total_declarations ** 0.5)

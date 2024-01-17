@@ -7,10 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -121,7 +118,7 @@ class VariableUsageDistanceTest {
     }
 
     @Test
-    void calculateDistanceIf() {
+    void calculateDoubleDeclarations() {
         String code =
                 """
                 public class Test {
@@ -132,12 +129,9 @@ class VariableUsageDistanceTest {
                         b = a + 4;
                         int c = a + b;
                         a = a + b;
-                        fun(a, b);
-                        if (a == 1) {
-                            int d = b + 1;
-                        } else {
-                            int g = a + 1;
-                        }
+                        fun(b, b);
+                        a = 1;
+                        a = 2;
                     };
                     void fun(int a, int b) {};
                 };
@@ -145,6 +139,22 @@ class VariableUsageDistanceTest {
 
         VariableUsageDistance calculator = new VariableUsageDistance(code, 1);
         DistanceResults values = calculator.calculateDistance();
+
+
+        assertEquals(3, values.distances.size());
+        assertEquals(2.0, values.distances.get("1.0"));
+        assertEquals(2.0, values.distances.get("2.0"));
+        assertEquals(3.0, values.distances.get("3.0"));
+
+        assertEquals(1.0, values.doubleDeclarations.get("1.0"));
+        assertEquals(3.0, values.doubleDeclarations.get("2.0"));
+
+
+    }
+
+    @Test
+    void calculateDistanceIf() {
+        DistanceResults values = getDistanceResults();
 
 
         assertEquals(4, values.distances.size());
@@ -185,6 +195,32 @@ class VariableUsageDistanceTest {
         assertEquals(2.0, values2.distances.get("5.0"));
 
 
+    }
+
+    private static DistanceResults getDistanceResults() {
+        String code =
+                """
+                public class Test {
+                    public void test() {
+                        int a = 1;
+                        int b = 2;
+                        a = 3;
+                        b = a + 4;
+                        int c = a + b;
+                        a = a + b;
+                        fun(a, b);
+                        if (a == 1) {
+                            int d = b + 1;
+                        } else {
+                            int g = a + 1;
+                        }
+                    };
+                    void fun(int a, int b) {};
+                };
+                """;
+
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1);
+        return calculator.calculateDistance();
     }
 
     @Test
@@ -639,6 +675,78 @@ class VariableUsageDistanceTest {
         String newCode = calculator.removeEmptyLinesAndComments(code);
 
         assertEquals(trimmedCode, newCode);
+    }
+
+    @Test
+    void testFindExamples() {
+        String code =
+                """
+                public class Test {
+                    public void test() {
+                        int a = 1;
+                        int b = 2;
+                        if (a == 1)
+                            b = b + 1;
+                         else
+                            a = a + 1;
+                            
+                        a = 1;
+                        a = 5;
+                        a = 2;
+                        int c = 3;
+                        c = a;
+                    };
+                    void fun(int a, int b) {};
+                };
+                """;
+
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1);
+        Map<Integer, List<Integer>> get_examples = new HashMap<>();
+        get_examples.put(1, Arrays.asList(0, 0, 0, 1));
+        get_examples.put(2, Arrays.asList(0, 1, 0, 0));
+        DistanceResults values = calculator.calculateDistance(get_examples);
+        Map<Integer, List<Integer>> examples = values.examples;
+
+        assertEquals(1, examples.size());
+        assertEquals(Arrays.asList(3,5), examples.get(2));
+
+        assertEquals(1, values.double_declaration_examples.size());
+        assertEquals(Arrays.asList(8,9), values.double_declaration_examples.get(1));
+
+        Map<Integer, List<Integer>> get_examples2 = new HashMap<>();
+        get_examples2.put(1, Arrays.asList(0, 0, 1, 1));
+        get_examples2.put(2, Arrays.asList(1, 1, 0, 0));
+        DistanceResults values2 = calculator.calculateDistance(get_examples2);
+
+        assertEquals(1, values2.examples.size());
+        assertEquals(Arrays.asList(11,13), values2.examples.get(2));
+
+        assertEquals(1, values2.double_declaration_examples.size());
+        assertEquals(Arrays.asList(9,10), values2.double_declaration_examples.get(1));
+
+    }
+
+    @Test
+    void testFn() {
+        String code = """
+                public long readLong() throws IOException {
+                        long res = 0L;
+                        streamInput.reset();
+                        final int reads = pagedBytes.length() / 8;
+                        for (int i = 0; i < reads; i++) {
+                            res = res ^ streamInput.readLong();
+                        }
+                        return res;
+                    }
+                """;
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1, false);
+
+        Map<Integer, List<Integer>> get_examples = new HashMap<>();
+        get_examples.put(1, Arrays.asList(0, 1, 0, 0));
+        DistanceResults values = calculator.calculateDistance(get_examples);
+
+        assertEquals(0, values.examples.size());
+
     }
 
 

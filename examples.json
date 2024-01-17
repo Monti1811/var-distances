@@ -1,0 +1,174 @@
+{
+  "examples": {
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\desirednodes\\TransportDesiredNodesActionsIT.java Distance: 5 Line: 144 to 149": [
+      144,
+      149
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\node\\tasks\\CancellableTasksIT.java Distance: 6 Line: 216 to 222": [
+      216,
+      222
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\desirednodes\\TransportDesiredNodesActionsIT.java Distance: 4 Line: 229 to 233": [
+      229,
+      233
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\desirednodes\\TransportDesiredNodesActionsIT.java Distance: 6 Line: 164 to 170": [
+      164,
+      170
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\desirednodes\\TransportDesiredNodesActionsIT.java Distance: 1 Line: 52 to 53": [
+      52,
+      53
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\desirednodes\\TransportDesiredNodesActionsIT.java Distance: 6 Line: 229 to 235": [
+      229,
+      235
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\allocation\\TransportGetDesiredBalanceActionIT.java Distance: 1 Line: 135 to 136": [
+      135,
+      136
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\desirednodes\\TransportDesiredNodesActionsIT.java Distance: 4 Line: 136 to 140": [
+      136,
+      140
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\allocation\\TransportGetDesiredBalanceActionIT.java Distance: 1 Line: 132 to 133": [
+      132,
+      133
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\desirednodes\\TransportDesiredNodesActionsIT.java Distance: 5 Line: 229 to 234": [
+      229,
+      234
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\node\\tasks\\CancellableTasksIT.java Distance: 5 Line: 102 to 107": [
+      102,
+      107
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\desirednodes\\TransportDesiredNodesActionsIT.java Distance: 5 Line: 184 to 189": [
+      184,
+      189
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\desirednodes\\TransportDesiredNodesActionsIT.java Distance: 4 Line: 126 to 130": [
+      126,
+      130
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\desirednodes\\TransportDesiredNodesActionsIT.java Distance: 4 Line: 168 to 172": [
+      168,
+      172
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\node\\tasks\\CancellableTasksIT.java Distance: 6 Line: 190 to 196": [
+      190,
+      196
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\desirednodes\\TransportDesiredNodesActionsIT.java Distance: 4 Line: 108 to 112": [
+      108,
+      112
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\desirednodes\\TransportDesiredNodesActionsIT.java Distance: 1 Line: 57 to 58": [
+      57,
+      58
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\desirednodes\\TransportDesiredNodesActionsIT.java Distance: 1 Line: 53 to 54": [
+      53,
+      54
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\admin\\cluster\\desirednodes\\TransportDesiredNodesActionsIT.java Distance: 5 Line: 368 to 373": [
+      368,
+      373
+    ]
+  },
+  "double_declaration_examples": {
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\discovery\\SnapshotDisruptionIT.java Distance: 1 Line: 274 to 275": [
+      274,
+      275
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\gateway\\RecoveryFromGatewayIT.java Distance: 1 Line: 624 to 625": [
+      624,
+      625
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\indices\\flush\\FlushIT.java Distance: 5 Line: 51 to 56": [
+      51,
+      56
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\cluster\\coordination\\CoordinationDiagnosticsServiceIT.java Distance: 1 Line: 97 to 98": [
+      97,
+      98
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\gateway\\RecoveryFromGatewayIT.java Distance: 6 Line: 237 to 243": [
+      237,
+      243
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\gateway\\RecoveryFromGatewayIT.java Distance: 5 Line: 195 to 200": [
+      195,
+      200
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\action\\termvectors\\GetTermVectorsIT.java Distance: 4 Line: 274 to 278": [
+      274,
+      278
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\gateway\\RecoveryFromGatewayIT.java Distance: 5 Line: 194 to 199": [
+      194,
+      199
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\cluster\\routing\\AllocationIdIT.java Distance: 1 Line: 156 to 157": [
+      156,
+      157
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\index\\store\\CorruptedFileIT.java Distance: 1 Line: 267 to 268": [
+      267,
+      268
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\index\\store\\CorruptedFileIT.java Distance: 1 Line: 352 to 353": [
+      352,
+      353
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\cluster\\coordination\\RareClusterStateIT.java Distance: 4 Line: 366 to 370": [
+      366,
+      370
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\index\\shard\\RemoveCorruptedShardDataCommandIT.java Distance: 1 Line: 121 to 122": [
+      121,
+      122
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\cluster\\coordination\\CoordinationDiagnosticsServiceIT.java Distance: 1 Line: 157 to 158": [
+      157,
+      158
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\cluster\\ClusterInfoServiceIT.java Distance: 4 Line: 167 to 171": [
+      167,
+      171
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\index\\store\\CorruptedFileIT.java Distance: 1 Line: 301 to 302": [
+      301,
+      302
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\cluster\\ClusterInfoServiceIT.java Distance: 4 Line: 175 to 179": [
+      175,
+      179
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\cluster\\coordination\\RareClusterStateIT.java Distance: 4 Line: 367 to 371": [
+      367,
+      371
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\gateway\\RecoveryFromGatewayIT.java Distance: 6 Line: 188 to 194": [
+      188,
+      194
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\gateway\\RecoveryFromGatewayIT.java Distance: 6 Line: 189 to 195": [
+      189,
+      195
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\cluster\\routing\\allocation\\decider\\MockDiskUsagesIT.java Distance: 6 Line: 174 to 180": [
+      174,
+      180
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\gateway\\RecoveryFromGatewayIT.java Distance: 6 Line: 278 to 284": [
+      278,
+      284
+    ],
+    "F:\\HiWi\\java_github_repos\\elasticsearch\\server\\src\\internalClusterTest\\java\\org\\elasticsearch\\cluster\\routing\\DelayedAllocationIT.java Distance: 1 Line: 140 to 141": [
+      140,
+      141
+    ]
+  }
+}
