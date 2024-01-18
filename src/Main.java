@@ -20,8 +20,8 @@ public class Main {
     static double totalDoubleDistance = 0;
     static double averageDoubleDistance = 0;
 
-    static Map<String, List<Integer>> examples = new HashMap<>();
-    static Map<String, List<Integer>> double_declaration_examples = new HashMap<>();
+    static Map<String, List<String>> examples = new HashMap<>();
+    static Map<String, List<String>> double_declaration_examples = new HashMap<>();
     static Map<Integer, List<Integer>> get_examples = new HashMap<>(0);
 
     static int distance = 1;
@@ -156,15 +156,59 @@ public class Main {
         for (Map.Entry<Integer, List<Integer>> entry : values.examples.entrySet()) {
             List<Integer> valuesListEntry = entry.getValue();
             for (int i = 0; i < valuesListEntry.size()-1; i = i + 2) {
-                String entry_name = path + " Distance: " + entry.getKey() + " Line: " + entry.getValue().get(i) + " to " + entry.getValue().get(i+1);
-                examples.put(entry_name, Arrays.asList(entry.getValue().get(i), entry.getValue().get(i+1)));
+                Integer lineBegin = valuesListEntry.get(i);
+                Integer lineEnd = valuesListEntry.get(i+1);
+                String entry_name = path + " Distance: " + entry.getKey() + " Line: " + lineBegin + " to " + lineEnd;
+                // Get the code from the fileContent from line i to lineBegin to lineEnd
+                StringBuilder code = new StringBuilder();
+                String[] lines = fileContent.split("\n");
+                // Show the previous 5 lines and the next 5 lines, if they exist
+                int showCodeBegin = lineBegin - 5;
+                if (showCodeBegin < 0) {
+                    showCodeBegin = 0;
+                }
+                int showCodeEnd = lineEnd + 5;
+                if (showCodeEnd > lines.length) {
+                    showCodeEnd = lines.length;
+                }
+                for (int j = showCodeBegin-1; j < showCodeEnd; j++) {
+                    if (j == lineBegin-1) {
+                        code.append(">>> \n").append(lines[j]).append("\n");
+                    } else if (j == lineEnd) {
+                        code.append("<<< \n").append(lines[j]).append("\n");
+                    } else
+                        code.append(lines[j]).append("\n");
+                }
+                examples.put(entry_name, List.of(code.toString().split("\n")));
             }
         }
         for (Map.Entry<Integer, List<Integer>> entry : values.double_declaration_examples.entrySet()) {
             List<Integer> valuesListEntry = entry.getValue();
             for (int i = 0; i < valuesListEntry.size()-1; i = i + 2) {
-                String entry_name = path + " Distance: " + entry.getKey() + " Line: " + entry.getValue().get(i) + " to " + entry.getValue().get(i + 1);
-                double_declaration_examples.put(entry_name, Arrays.asList(entry.getValue().get(i), entry.getValue().get(i+1)));
+                Integer lineBegin = valuesListEntry.get(i);
+                Integer lineEnd = valuesListEntry.get(i+1);
+                String entry_name = path + " Distance: " + entry.getKey() + " Line: " + lineBegin + " to " + lineEnd;
+                // Get the code from the fileContent from line i to lineBegin to lineEnd
+                StringBuilder code = new StringBuilder();
+                String[] lines = fileContent.split("\n");
+                // Show the previous 5 lines and the next 5 lines, if they exist
+                int showCodeBegin = lineBegin - 5;
+                if (showCodeBegin < 0) {
+                    showCodeBegin = 0;
+                }
+                int showCodeEnd = lineEnd + 5;
+                if (showCodeEnd > lines.length) {
+                    showCodeEnd = lines.length;
+                }
+                for (int j = showCodeBegin-1; j < showCodeEnd; j++) {
+                    if (j == lineBegin-1) {
+                        code.append(">>> \n").append(lines[j]).append("\n");
+                    } else if (j == lineEnd) {
+                        code.append("<<< \n").append(lines[j]).append("\n");
+                    } else
+                        code.append(lines[j]).append("\n");
+                }
+                double_declaration_examples.put(entry_name, List.of(code.toString().split("\n")));
             }
         }
     }

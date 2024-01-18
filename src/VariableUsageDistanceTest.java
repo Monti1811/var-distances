@@ -773,5 +773,28 @@ class VariableUsageDistanceTest {
 
     }
 
+    @Test
+    void testFn3() {
+        String code = """
+                public class Test {
+                    public int hashCode() {
+                            int[] result = new ArrayList<>();
+                            result[2 * i] = HEX_DIGITS[b >> 4 & 0xf];
+                            result[2 * i + 1] = HEX_DIGITS[b & 0xf];
+                            return result;
+                        }
+                    }
+                """;
+        // TODO: 2*i is not seen as a array access as parent is binary expr
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1, false);
+
+        Map<Integer, List<Integer>> get_examples = new HashMap<>();
+        get_examples.put(1, Arrays.asList(0, 1, 0, 1));
+        DistanceResults values = calculator.calculateDistance(get_examples);
+
+        assertEquals(0, values.double_declaration_examples.size());
+
+    }
+
 
 }

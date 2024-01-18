@@ -1,12 +1,10 @@
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.AssignExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 
 import java.util.*;
@@ -89,7 +87,23 @@ public class VariableUsageDistance {
             });
             method.findAll(AssignExpr.class).forEach(assignExpr -> {
                 assignExpr.getTarget().findAll(NameExpr.class).forEach(nameExpr -> {
+                    Optional<Node> parentNode = nameExpr.getParentNode();
+                    if (parentNode.isPresent()) {
+                        Node parent = parentNode.get();
+                        // Check if the parent is an ArrayAccessExpr, i.e. a[0] = 1 or FieldAccessExpr, i.e. a.b = 1
+                        if (parent instanceof ArrayAccessExpr || (parent instanceof FieldAccessExpr)) {
+                            addToMap(declarations, nameExpr.getNameAsString(), (double) assignExpr.getValue().getBegin().get().line);
+                            return;
+                        }
+                    }
                     addToMap(declarations, nameExpr.getNameAsString(), (double) nameExpr.getBegin().get().line);
+                    /* Not sure if this is really correct/needed
+                    AssignExpr.Operator operator = assignExpr.getOperator();
+                    if (!operator.equals(AssignExpr.Operator.ASSIGN)) {
+                        // If the operator is not an assignment, it is a reassignment, so also add the right side of the assignment to the usages
+                        addToMap(declarations, nameExpr.getNameAsString(), (double) assignExpr.getValue().getBegin().get().line);
+                    }
+                    */
                 });
             });
 
