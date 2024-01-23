@@ -26,6 +26,10 @@ class VariableUsageDistanceTest {
                 
                 
                 b = a;
+                int c = a;
+                int d = 1;
+                d = 1;
+                int e = a;
             };
             void fun(int a, int b) {};
         };
@@ -81,9 +85,8 @@ class VariableUsageDistanceTest {
 
         VariableUsageDistance calculator = new VariableUsageDistance(code, 1);
         DistanceResults values = calculator.calculateDistance();
-        assertEquals(2, values.distances.size());
+        assertEquals(1, values.distances.size());
         assertEquals(2.0, values.distances.get("2.0"));
-        assertEquals(1.0, values.distances.get("5.0"));
     }
 
 
@@ -104,15 +107,13 @@ class VariableUsageDistanceTest {
             void fun(int a, int b) {};
         };
         """;
-
+        // TODO
         VariableUsageDistance calculator = new VariableUsageDistance(code, 1);
         DistanceResults values = calculator.calculateDistance();
 
 
-        assertEquals(3, values.distances.size());
+        assertEquals(1, values.distances.size());
         assertEquals(3.0, values.distances.get("1.0"));
-        assertEquals(2.0, values.distances.get("2.0"));
-        assertEquals(2.0, values.distances.get("3.0"));
 
 
     }
@@ -141,10 +142,8 @@ class VariableUsageDistanceTest {
         DistanceResults values = calculator.calculateDistance();
 
 
-        assertEquals(3, values.distances.size());
+        assertEquals(1, values.distances.size());
         assertEquals(2.0, values.distances.get("1.0"));
-        assertEquals(2.0, values.distances.get("2.0"));
-        assertEquals(3.0, values.distances.get("3.0"));
 
         assertEquals(1.0, values.doubleDeclarations.get("1.0"));
         assertEquals(3.0, values.doubleDeclarations.get("2.0"));
@@ -157,11 +156,8 @@ class VariableUsageDistanceTest {
         DistanceResults values = getDistanceResults();
 
 
-        assertEquals(4, values.distances.size());
+        assertEquals(1, values.distances.size());
         assertEquals(3.0, values.distances.get("1.0"));
-        assertEquals(3.0, values.distances.get("2.0"));
-        assertEquals(2.0, values.distances.get("3.0"));
-        assertEquals(2.0, values.distances.get("5.0"));
 
         String code2 =
                 """
@@ -188,11 +184,8 @@ class VariableUsageDistanceTest {
         DistanceResults values2 = calculator2.calculateDistance();
 
 
-        assertEquals(4, values2.distances.size());
+        assertEquals(1, values2.distances.size());
         assertEquals(3.0, values2.distances.get("1.0"));
-        assertEquals(3.0, values2.distances.get("2.0"));
-        assertEquals(2.0, values2.distances.get("3.0"));
-        assertEquals(2.0, values2.distances.get("5.0"));
 
 
     }
@@ -248,11 +241,8 @@ class VariableUsageDistanceTest {
         DistanceResults values = calculator.calculateDistance();
 
 
-        assertEquals(4, values.distances.size());
+        assertEquals(1, values.distances.size());
         assertEquals(3.0, values.distances.get("1.0"));
-        assertEquals(2.0, values.distances.get("2.0"));
-        assertEquals(2.0, values.distances.get("3.0"));
-        assertEquals(1.0, values.distances.get("5.0"));
 
         String code2 =
                 """
@@ -278,11 +268,9 @@ class VariableUsageDistanceTest {
         DistanceResults values2 = calculator2.calculateDistance();
 
 
-        assertEquals(4, values2.distances.size());
+        assertEquals(1, values2.distances.size());
         assertEquals(3.0, values2.distances.get("1.0"));
-        assertEquals(2.0, values2.distances.get("2.0"));
-        assertEquals(2.0, values2.distances.get("3.0"));
-        assertEquals(1.0, values2.distances.get("5.0"));
+
 
 
     }
@@ -312,12 +300,8 @@ class VariableUsageDistanceTest {
         DistanceResults values = calculator.calculateDistance();
 
 
-        assertEquals(5, values.distances.size());
+        assertEquals(1, values.distances.size());
         assertEquals(3.0, values.distances.get("1.0"));
-        assertEquals(2.0, values.distances.get("2.0"));
-        assertEquals(2.0, values.distances.get("3.0"));
-        assertEquals(1.0, values.distances.get("4.0"));
-        assertEquals(1.0, values.distances.get("5.0"));
 
         String code2 =
                 """
@@ -344,12 +328,8 @@ class VariableUsageDistanceTest {
         DistanceResults values2 = calculator2.calculateDistance();
 
 
-        assertEquals(5, values2.distances.size());
+        assertEquals(1, values2.distances.size());
         assertEquals(3.0, values2.distances.get("1.0"));
-        assertEquals(2.0, values2.distances.get("2.0"));
-        assertEquals(2.0, values2.distances.get("3.0"));
-        assertEquals(1.0, values2.distances.get("4.0"));
-        assertEquals(1.0, values2.distances.get("5.0"));
 
 
     }
@@ -379,11 +359,8 @@ class VariableUsageDistanceTest {
         DistanceResults values = calculator.calculateDistance();
 
 
-        assertEquals(4, values.distances.size());
+        assertEquals(1, values.distances.size());
         assertEquals(3.0, values.distances.get("1.0"));
-        assertEquals(2.0, values.distances.get("2.0"));
-        assertEquals(2.0, values.distances.get("3.0"));
-        assertEquals(1.0, values.distances.get("5.0"));
 
     }
 
@@ -406,9 +383,8 @@ class VariableUsageDistanceTest {
         DistanceResults values = calculator.calculateDistance();
 
 
-        assertEquals(2, values.distances.size());
+        assertEquals(1, values.distances.size());
         assertEquals(1.0, values.distances.get("1.0"));
-        assertEquals(1.0, values.distances.get("2.0"));
         String code2 =
                 """
                 public class Test {
@@ -425,9 +401,8 @@ class VariableUsageDistanceTest {
         DistanceResults values2 = calculator2.calculateDistance();
 
 
-        assertEquals(2, values2.distances.size());
+        assertEquals(1, values2.distances.size());
         assertEquals(1.0, values2.distances.get("1.0"));
-        assertEquals(1.0, values2.distances.get("2.0"));
 
 
     }
@@ -483,11 +458,9 @@ class VariableUsageDistanceTest {
         DistanceResults values = calculator.calculateDistance();
 
 
-        assertEquals(4, values.distances.size());
+        assertEquals(2, values.distances.size());
         assertEquals(1.0, values.distances.get("3.0"));
         assertEquals(1.0, values.distances.get("4.0"));
-        assertEquals(1.0, values.distances.get("7.0"));
-        assertEquals(1.0, values.distances.get("10.0"));
 
     }
 
@@ -515,10 +488,8 @@ class VariableUsageDistanceTest {
         DistanceResults values = calculator.calculateDistance();
 
 
-        assertEquals(3, values.distances.size());
+        assertEquals(1, values.distances.size());
         assertEquals(1.0, values.distances.get("3.0"));
-        assertEquals(1.0, values.distances.get("5.0"));
-        assertEquals(1.0, values.distances.get("7.0"));
 
     }
 
@@ -705,13 +676,13 @@ class VariableUsageDistanceTest {
         get_examples.put(1, Arrays.asList(0, 0, 0, 1));
         get_examples.put(2, Arrays.asList(0, 1, 0, 0));
         DistanceResults values = calculator.calculateDistance(get_examples);
-        Map<Integer, List<Integer>> examples = values.examples;
+        Map<Integer, List<String>> examples = values.examples;
 
         assertEquals(1, examples.size());
-        assertEquals(Arrays.asList(3,5), examples.get(2));
+        assertEquals(Arrays.asList("3","5","a"), examples.get(2));
 
         assertEquals(1, values.double_declaration_examples.size());
-        assertEquals(Arrays.asList(8,9), values.double_declaration_examples.get(1));
+        assertEquals(Arrays.asList("8","9","a"), values.double_declaration_examples.get(1));
 
         Map<Integer, List<Integer>> get_examples2 = new HashMap<>();
         get_examples2.put(1, Arrays.asList(0, 0, 1, 1));
@@ -719,10 +690,10 @@ class VariableUsageDistanceTest {
         DistanceResults values2 = calculator.calculateDistance(get_examples2);
 
         assertEquals(1, values2.examples.size());
-        assertEquals(Arrays.asList(11,13), values2.examples.get(2));
+        assertEquals(Arrays.asList("11","13","a"), values2.examples.get(2));
 
         assertEquals(1, values2.double_declaration_examples.size());
-        assertEquals(Arrays.asList(9,10), values2.double_declaration_examples.get(1));
+        assertEquals(Arrays.asList("9","10","a"), values2.double_declaration_examples.get(1));
 
     }
 
@@ -786,6 +757,7 @@ class VariableUsageDistanceTest {
                     }
                 """;
         // TODO: 2*i is not seen as a array access as parent is binary expr
+
         VariableUsageDistance calculator = new VariableUsageDistance(code, 1, false);
 
         Map<Integer, List<Integer>> get_examples = new HashMap<>();
@@ -794,7 +766,204 @@ class VariableUsageDistanceTest {
 
         assertEquals(0, values.double_declaration_examples.size());
 
+        VariableUsageDistance calculator2 = new VariableUsageDistance(code, 1);
+        DistanceResults res = calculator2.calculateDistance();
+
+        assertEquals(1, res.distances.size());
+
     }
+
+    @Test
+    void testFn4() {
+        String code = """
+                public class Test {
+                    public int hashCode() {
+                            int a = 1;
+                            a *= 2;
+                        }
+                    }
+                """;
+        // TODO: 2*i is not seen as a array access as parent is binary expr
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1, false);
+
+        DistanceResults values = calculator.calculateDistance();
+
+        assertEquals(1, values.distances.size());
+        assertEquals(1.0, values.distances.get("1.0"));
+        assertEquals(0, values.doubleDeclarations.size());
+
+    }
+
+    @Test
+    void testFn5() {
+        String code = """
+                public class Test {
+                    public int hashCode() {
+                            Table table = getTableWithHeader(request);
+                            table.startRow();
+                            table.addCell(response.getHits().getTotalHits().value);
+                            table.endRow();
+                        }
+                    }
+                """;
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1, false);
+
+        DistanceResults values = calculator.calculateDistance();
+
+        assertEquals(1, values.distances.size());
+        assertEquals(1.0, values.distances.get("1.0"));
+        assertEquals(0, values.doubleDeclarations.size());
+
+    }
+
+    @Test
+    void testFn6() {
+        String code = """
+                public class Test {
+                    public int hashCode() {
+                            Table table = getTableWithHeader(request);
+                            table.a = 1;
+                            table.b = 2;
+                        }
+                    }
+                """;
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1, false);
+
+        DistanceResults values = calculator.calculateDistance();
+
+        assertEquals(1, values.distances.size());
+        assertEquals(1.0, values.distances.get("1.0"));
+        assertEquals(0, values.doubleDeclarations.size());
+
+    }
+
+    @Test
+    void testFn7() {
+        String code = """
+                public class Test {
+                    public int hashCode() {
+                            int[] table = {1, 2, 3, 4};
+                            table[3] = 1;
+                            int i = 1;
+                            table[i] = 2;
+                        }
+                    }
+                """;
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1, false);
+
+        DistanceResults values = calculator.calculateDistance();
+
+        assertEquals(1, values.distances.size());
+        assertEquals(2.0, values.distances.get("1.0"));
+        assertEquals(0, values.doubleDeclarations.size());
+
+    }
+
+    @Test
+    void testFn8() {
+        String code = """
+                public class Test {
+                    public int hashCode() {
+                            if (synonymId == null) {
+                                // >>> var: synonymRuleType
+                                synonymRuleType = "synonyms_path";
+                                synonymId = filterComponentSettings.get(synonymRuleType);
+                            }
+                            if (synonymId == null) {
+                                synonymRuleType = "synonyms";
+                                // <<< var: synonymRuleType
+                                isInline = true;
+                            }
+                        }
+                    }
+                """;
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1, false);
+
+        DistanceResults values = calculator.calculateDistance();
+
+        assertEquals(2, values.distances.size());
+        assertEquals(1.0, values.distances.get("1.0"));
+        assertEquals(1.0, values.distances.get("2.0"));
+        assertEquals(0, values.doubleDeclarations.size());
+
+    }
+
+    @Test
+    void testFn9() {
+        String code = """
+                public class Test {
+                    public int hashCode() {
+                         Query innerBig = big.toQuery(context);
+                         assert innerBig instanceof SpanQuery;
+                    }
+                }
+                """;
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1, false);
+
+        DistanceResults values = calculator.calculateDistance();
+
+        assertEquals(1, values.distances.size());
+        assertEquals(1.0, values.distances.get("1.0"));
+        assertEquals(0, values.doubleDeclarations.size());
+
+    }
+
+    @Test
+    void testFn10() {
+        String code = """
+                public class Test {
+                    public int hashCode() {
+                         for (String fieldName : fields2) {
+                              Terms terms = fields2.terms(fieldName);
+                              if (terms != null) {
+                                  parallelFields.addField(fieldName, terms);
+                              }
+                         }
+                         for (String fieldName : fields1) {
+                              Terms terms = fields1.terms(fieldName);
+                              if (terms != null) {
+                                  parallelFields.addField(fieldName, terms);
+                              }
+                         }
+                         return 1;
+                    }
+                }
+                """;
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1, false);
+
+        DistanceResults values = calculator.calculateDistance();
+
+        assertEquals(1, values.distances.size());
+        assertEquals(4.0, values.distances.get("1.0"));
+        assertEquals(0, values.doubleDeclarations.size());
+
+    }
+
+    @Test
+    void testFn11() {
+        String code = """
+                public class Test {
+                    public int hashCode() {
+                         newRecoveryTarget = oldRecoveryTarget.retryCopy();
+                         startRecoveryInternal(newRecoveryTarget, activityTimeout);
+                         
+                         // Closes the current recovery target
+                         boolean successfulReset = oldRecoveryTarget.resetRecovery(newRecoveryTarget.cancellableThreads());
+                    }
+                }
+                """;
+        VariableUsageDistance calculator = new VariableUsageDistance(code, 1);
+
+        DistanceResults values = calculator.calculateDistance();
+
+        assertEquals(1, values.distances.size());
+        assertEquals(1.0, values.distances.get("1.0"));
+        assertEquals(0, values.doubleDeclarations.size());
+
+    }
+
+
+
 
 
 }

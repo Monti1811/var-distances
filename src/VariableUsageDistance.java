@@ -11,6 +11,13 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+enum PARENT_TYPE {
+    ARRAY,
+    INDEX,
+    KEY,
+    OTHER
+}
+
 public class VariableUsageDistance {
 
     private final String code;
@@ -52,6 +59,8 @@ public class VariableUsageDistance {
 
     public DistanceResults calculateDistance(Map<Integer, List<Integer>> get_examples) {
 
+        // TODO: rewrite this completely to use the blockstmt of the methoddeclaration and iterate through those block statements recursively by only adding the variables when found.
+
         // Structure of Map in get_examples:
         // key = distance
         // value = array of size 4
@@ -69,8 +78,8 @@ public class VariableUsageDistance {
         double averageDoubleDistance = 0.0;
         Map<String, Double> distances = new HashMap<>();
         Map<String, Double> doubleDeclarations = new HashMap<>();
-        Map<Integer, List<Integer>> examples = new HashMap<>();
-        Map<Integer, List<Integer>> double_declaration_examples = new HashMap<>();
+        Map<Integer, List<String>> examples = new HashMap<>();
+        Map<Integer, List<String>> double_declaration_examples = new HashMap<>();
         CompilationUnit cu;
         try {
             cu = StaticJavaParser.parse(this.code);
@@ -82,32 +91,30 @@ public class VariableUsageDistance {
         List<MethodDeclaration> methodDeclarations = cu.findAll(MethodDeclaration.class);
         for (MethodDeclaration method : methodDeclarations) {
             Map<String, List<Double>> declarations = new HashMap<>();
+            Map<String, List<Double>> usages = new HashMap<>();
+
             method.findAll(VariableDeclarator.class).forEach(variable -> {
                 addToMap(declarations, variable.getNameAsString(), (double) variable.getBegin().get().line);
             });
             method.findAll(AssignExpr.class).forEach(assignExpr -> {
                 assignExpr.getTarget().findAll(NameExpr.class).forEach(nameExpr -> {
-                    Optional<Node> parentNode = nameExpr.getParentNode();
-                    if (parentNode.isPresent()) {
-                        Node parent = parentNode.get();
-                        // Check if the parent is an ArrayAccessExpr, i.e. a[0] = 1 or FieldAccessExpr, i.e. a.b = 1
-                        if (parent instanceof ArrayAccessExpr || (parent instanceof FieldAccessExpr)) {
-                            addToMap(declarations, nameExpr.getNameAsString(), (double) assignExpr.getValue().getBegin().get().line);
-                            return;
-                        }
+                    // Check if the parent is an ArrayAccessExpr, i.e. a[0] = 1 or FieldAccessExpr, i.e. a.b = 1
+                    PARENT_TYPE isArrayOrFieldAccessRes = isArrayOrFieldAccess(nameExpr, 0);
+                    if (isArrayOrFieldAccessRes == PARENT_TYPE.INDEX || isArrayOrFieldAccessRes == PARENT_TYPE.ARRAY) {
+                        addToMap(usages, nameExpr.getNameAsString(), (double) nameExpr.getBegin().get().line);
+                    } else if (isArrayOrFieldAccessRes == PARENT_TYPE.OTHER) {
+                        addToMap(declarations, nameExpr.getNameAsString(), (double) nameExpr.getBegin().get().line);
                     }
-                    addToMap(declarations, nameExpr.getNameAsString(), (double) nameExpr.getBegin().get().line);
-                    /* Not sure if this is really correct/needed
+                    /* Not sure if this is really correct/needed*/
                     AssignExpr.Operator operator = assignExpr.getOperator();
                     if (!operator.equals(AssignExpr.Operator.ASSIGN)) {
                         // If the operator is not an assignment, it is a reassignment, so also add the right side of the assignment to the usages
-                        addToMap(declarations, nameExpr.getNameAsString(), (double) assignExpr.getValue().getBegin().get().line);
+                        addToMap(usages, nameExpr.getNameAsString(), (double) nameExpr.getBegin().get().line);
                     }
-                    */
+
                 });
             });
 
-            Map<String, List<Double>> usages = new HashMap<>();
             method.getBody().ifPresent(body -> body.getStatements().forEach(statement -> searchBody(usages, statement)));
 
             // For each declaration, check if there is a usage within the minDistance and at which line is the nearest declaration to the usage
@@ -115,15 +122,20 @@ public class VariableUsageDistance {
                 String variableName = entry.getKey();
                 List<Double> declarationLines = entry.getValue();
                 List<Double> usageLines = usages.getOrDefault(variableName, new ArrayList<>());
-                for (Double usageLine : usageLines) {
+
+                for (Double declarationLine : declarationLines) {
                     double minDistance = Double.MAX_VALUE;
-                    double chosenDeclarationLine = 0;
-                    for (Double declarationLine : declarationLines) {
+                    double chosenUsageLine = 0;
+                    for (Double usageLine : usageLines) {
                         double distance = usageLine - declarationLine;
                         if (distance > 0 && distance < minDistance) {
                             minDistance = distance;
-                            chosenDeclarationLine = declarationLine;
+                            chosenUsageLine = usageLine;
                         }
+                    }
+                    List<Double> declarationLinesWO = declarationLines.subList(declarationLines.indexOf(declarationLine) + 1, declarationLines.size());
+                    if (!isNearestUsage(declarationLine, chosenUsageLine, declarationLinesWO)) {
+                        continue;
                     }
                     if (minDistance >= this.minDistance && minDistance != Double.MAX_VALUE) {
                         // Add it to the number of saved distances if it exists
@@ -144,8 +156,8 @@ public class VariableUsageDistance {
                                     distance_example.set(0, val);
                                 } else if (distance_example.get(1) > 0) {
                                     // Add it to the examples map with the distance as the key and the line numbers as the value
-                                    List<Integer> old_values = examples.getOrDefault(minDistanceInt, new ArrayList<>());
-                                    old_values.addAll(Arrays.asList((int) chosenDeclarationLine, usageLine.intValue()));
+                                    List<String> old_values = examples.getOrDefault(minDistanceInt, new ArrayList<>());
+                                    old_values.addAll(Arrays.asList(String.valueOf(declarationLine.intValue()), String.valueOf((int)chosenUsageLine), variableName));
                                     examples.put((int) minDistance, old_values);
                                     // Reduce it by 1
                                     Integer val = distance_example.get(1) - 1;
@@ -182,8 +194,8 @@ public class VariableUsageDistance {
                                         distance_example.set(2, val);
                                     } else if (distance_example.get(3) > 0) {
                                         // Add it to the examples map with the distance as the key and the line numbers as the value
-                                        List<Integer> old_values = double_declaration_examples.getOrDefault(key, new ArrayList<>());
-                                        old_values.addAll(Arrays.asList(declarationFirst.intValue(), declarationSecond.intValue()));
+                                        List<String> old_values = double_declaration_examples.getOrDefault(key, new ArrayList<>());
+                                        old_values.addAll(Arrays.asList(String.valueOf(declarationFirst.intValue()), String.valueOf(declarationSecond.intValue()), variableName));
                                         double_declaration_examples.put(key, old_values);
                                         // Reduce it by 1
                                         Integer val = distance_example.get(3) - 1;
@@ -215,7 +227,16 @@ public class VariableUsageDistance {
 
     private boolean isDeclarationAfterDeclaration(Double declarationFirst, Double declarationSecond, List<Double> usageLines) {
         for (Double usageLine : usageLines) {
-            if (declarationFirst <= usageLine && usageLine < declarationSecond) {
+            if (declarationFirst < usageLine && usageLine <= declarationSecond) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isNearestUsage(Double declarationLine, Double usageLines, List<Double> declarationLines) {
+        for (Double declarationLine2 : declarationLines) {
+            if (declarationLine < declarationLine2 && declarationLine2 < usageLines) {
                 return false;
             }
         }
@@ -250,6 +271,13 @@ public class VariableUsageDistance {
             }
             if (!methodCallExprs.isEmpty()) {
                 methodCallExprs.forEach(methodCallExpr -> {
+                    // Add the scope to the usages (i.e. calls to a function of a variable, i.e. a.fun())
+                    methodCallExpr.getScope().ifPresent(scope -> {
+                        scope.findAll(NameExpr.class).forEach(nameExpr -> {
+                            addToMap(usages, nameExpr.getNameAsString(), (double) nameExpr.getBegin().get().line);
+                        });
+                    });
+                    // Add the arguments to the usages (i.e. fun(a))
                     methodCallExpr.getArguments().forEach(argument -> {
                         argument.findAll(NameExpr.class).forEach(nameExpr -> {
                             addToMap(usages, nameExpr.getNameAsString(), (double) nameExpr.getBegin().get().line);
@@ -288,6 +316,22 @@ public class VariableUsageDistance {
                 compare.findAll(NameExpr.class).forEach(nameExpr -> {
                     addToMap(usages, nameExpr.getNameAsString(), (double) nameExpr.getBegin().get().line);
                 });
+            }
+        } else if (statement.isForEachStmt()) {
+            ForEachStmt forEachStmt = statement.asForEachStmt();
+            // Add the iterable to the usages (i.e. for (int a : !b!))
+            forEachStmt.getIterable().findAll(NameExpr.class).forEach(nameExpr -> {
+                addToMap(usages, nameExpr.getNameAsString(), (double) nameExpr.getBegin().get().line);
+            });
+            // Add the variable to the usages (i.e. for (int !a! : b))
+            forEachStmt.getVariable().findAll(NameExpr.class).forEach(nameExpr -> {
+                addToMap(usages, nameExpr.getNameAsString(), (double) nameExpr.getBegin().get().line);
+            });
+            Statement body = forEachStmt.getBody();
+            if (body.isBlockStmt()) {
+                body.asBlockStmt().getStatements().forEach(s -> searchBody(usages, s));
+            } else {
+                searchBody(usages, body);
             }
 
         } else if (statement.isIfStmt()) {
@@ -347,6 +391,11 @@ public class VariableUsageDistance {
             doStmt.getCondition().findAll(NameExpr.class).forEach(nameExpr -> {
                 addToMap(usages, nameExpr.getNameAsString(), (double) nameExpr.getBegin().get().line);
             });
+        } else if (statement.isAssertStmt()) {
+            AssertStmt assertStmt = statement.asAssertStmt();
+            assertStmt.getCheck().findAll(NameExpr.class).forEach(nameExpr -> {
+                addToMap(usages, nameExpr.getNameAsString(), (double) nameExpr.getBegin().get().line);
+            });
         }
     }
 
@@ -356,6 +405,35 @@ public class VariableUsageDistance {
         } else {
             map.put(key, new ArrayList<>(Collections.singletonList(value)));
         }
+    }
+
+    PARENT_TYPE isArrayOrFieldAccess(Node node, int counter) {
+        if (counter > 5) {
+            return PARENT_TYPE.OTHER;
+        }
+        if (node.getParentNode().isEmpty()) {
+            return PARENT_TYPE.OTHER;
+        }
+        Node parent = node.getParentNode().get();
+        if (parent instanceof ArrayAccessExpr || (parent instanceof FieldAccessExpr)) {
+            if (parent instanceof final ArrayAccessExpr arrayAccessExpr) {
+                // Check if the original node is the name of the array, i.e. the a of a[0] = 1
+                if (arrayAccessExpr.getName().equals(node)) {
+                    return PARENT_TYPE.ARRAY;
+                } else {
+                    return PARENT_TYPE.INDEX;
+                }
+            } else if (parent instanceof final FieldAccessExpr fieldAccessExpr) {
+                // Check if the original node is the name of the field, i.e. the a of a.b = 1
+                if (fieldAccessExpr.getScope().equals(node)) {
+                    return PARENT_TYPE.ARRAY;
+                } else {
+                    return PARENT_TYPE.KEY;
+                }
+            }
+            return PARENT_TYPE.INDEX;
+        }
+        return isArrayOrFieldAccess(parent, counter + 1);
     }
 
     public String removeEmptyLinesAndComments(String code) {

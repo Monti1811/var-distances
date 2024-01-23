@@ -31,5 +31,6 @@ repo = "elasticsearch/server/src/main"
 # [2] amount of times that are ignored before saving double declaration examples,
 # [3] amount of double declaration examples to save
 
+#os.system("\"C:\\Program Files\\Java\\jdk-17.0.4.1\\bin\\java.exe\" -jar out/artifacts/distancecalculator_jar/distancecalculator.jar ex " + BASE_PATH_TO_REPOS + repo + " find_examples.json")
 os.system("\"C:\\Program Files\\Java\\jdk-17.0.4.1\\bin\\java.exe\" -jar distancecalculator.jar ex " + BASE_PATH_TO_REPOS + repo + " find_examples.json")
 

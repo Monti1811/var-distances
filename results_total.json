@@ -1,0 +1,11 @@
+{
+    "totalDeclarations": 1243304.0,
+    "totalDistance": 4693046.0,
+    "averageDistance": 3.7746568819854196,
+    "totalDoubleDeclarations": 67319.0,
+    "totalDoubleDeclarationsDistance": 464348.0,
+    "averageDoubleDeclarationsDistance": 6.897725753501983,
+    "medianDistance": 1.0,
+    "medianDoubleDeclarationsDistance": 3.0,
+    "standardError": 0.0033852349403830917
+}

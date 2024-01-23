@@ -11,8 +11,8 @@ public class DistanceResults {
     double totalDoubleDistance = 0.0;
     double averageDoubleDistance = 0.0;
 
-    Map<Integer, List<Integer>> examples = new HashMap<>();
-    Map<Integer, List<Integer>> double_declaration_examples = new HashMap<>();
+    Map<Integer, List<String>> examples = new HashMap<>();
+    Map<Integer, List<String>> double_declaration_examples = new HashMap<>();
 
     
     Map<String, Double> distances = new HashMap<>();
@@ -40,7 +40,7 @@ public class DistanceResults {
         this.doubleDeclarations = doubleDeclarations;
     }
 
-    public DistanceResults(Map<Integer, List<Integer>> examples, Map<Integer, List<Integer>> double_declaration_examples) {
+    public DistanceResults(Map<Integer, List<String>> examples, Map<Integer, List<String>> double_declaration_examples) {
         this.examples = examples;
         this.double_declaration_examples = double_declaration_examples;
     }

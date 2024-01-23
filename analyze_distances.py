@@ -98,3 +98,5 @@ json_results["total"]["values"]["standardError"] = (total_distance / total_decla
 # Write it to the json file
 with io.open('results.json', 'w', encoding='utf-8') as f:
     f.write(json.dumps(json_results, indent=4, ensure_ascii=False))
+with io.open('results_total.json', 'w', encoding='utf-8') as f:
+    f.write(json.dumps(json_results["total"]["values"], indent=4, ensure_ascii=False))

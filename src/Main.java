@@ -153,58 +153,62 @@ public class Main {
 
         VariableUsageDistance calculator = new VariableUsageDistance(fileContent, distance, false);
         DistanceResults values = calculator.calculateDistance(get_examples);
-        for (Map.Entry<Integer, List<Integer>> entry : values.examples.entrySet()) {
-            List<Integer> valuesListEntry = entry.getValue();
-            for (int i = 0; i < valuesListEntry.size()-1; i = i + 2) {
-                Integer lineBegin = valuesListEntry.get(i);
-                Integer lineEnd = valuesListEntry.get(i+1);
+        for (Map.Entry<Integer, List<String>> entry : values.examples.entrySet()) {
+            List<String> valuesListEntry = entry.getValue();
+            for (int i = 0; i < valuesListEntry.size()-1; i = i + 3) {
+                String lineBegin = valuesListEntry.get(i);
+                String lineEnd = valuesListEntry.get(i+1);
                 String entry_name = path + " Distance: " + entry.getKey() + " Line: " + lineBegin + " to " + lineEnd;
                 // Get the code from the fileContent from line i to lineBegin to lineEnd
                 StringBuilder code = new StringBuilder();
                 String[] lines = fileContent.split("\n");
                 // Show the previous 5 lines and the next 5 lines, if they exist
-                int showCodeBegin = lineBegin - 5;
+                int lineBeginInt = Integer.parseInt(lineBegin);
+                int lineEndInt = Integer.parseInt(lineEnd);
+                int showCodeBegin = lineBeginInt - 5;
                 if (showCodeBegin < 0) {
                     showCodeBegin = 0;
                 }
-                int showCodeEnd = lineEnd + 5;
+                int showCodeEnd = lineEndInt + 5;
                 if (showCodeEnd > lines.length) {
                     showCodeEnd = lines.length;
                 }
                 for (int j = showCodeBegin-1; j < showCodeEnd; j++) {
-                    if (j == lineBegin-1) {
-                        code.append(">>> \n").append(lines[j]).append("\n");
-                    } else if (j == lineEnd) {
-                        code.append("<<< \n").append(lines[j]).append("\n");
+                    if (j == lineBeginInt-1) {
+                        code.append(">>> var: ").append(valuesListEntry.get(i + 2)).append("\n").append(lines[j]).append("\n");
+                    } else if (j == lineEndInt) {
+                        code.append("<<< var: ").append(valuesListEntry.get(i + 2)).append("\n").append(lines[j]).append("\n");
                     } else
                         code.append(lines[j]).append("\n");
                 }
                 examples.put(entry_name, List.of(code.toString().split("\n")));
             }
         }
-        for (Map.Entry<Integer, List<Integer>> entry : values.double_declaration_examples.entrySet()) {
-            List<Integer> valuesListEntry = entry.getValue();
-            for (int i = 0; i < valuesListEntry.size()-1; i = i + 2) {
-                Integer lineBegin = valuesListEntry.get(i);
-                Integer lineEnd = valuesListEntry.get(i+1);
+        for (Map.Entry<Integer, List<String>> entry : values.double_declaration_examples.entrySet()) {
+            List<String> valuesListEntry = entry.getValue();
+            for (int i = 0; i < valuesListEntry.size()-1; i = i + 3) {
+                String lineBegin = valuesListEntry.get(i);
+                String lineEnd = valuesListEntry.get(i+1);
+                int lineBeginInt = Integer.parseInt(lineBegin);
+                int lineEndInt = Integer.parseInt(lineEnd);
                 String entry_name = path + " Distance: " + entry.getKey() + " Line: " + lineBegin + " to " + lineEnd;
                 // Get the code from the fileContent from line i to lineBegin to lineEnd
                 StringBuilder code = new StringBuilder();
                 String[] lines = fileContent.split("\n");
                 // Show the previous 5 lines and the next 5 lines, if they exist
-                int showCodeBegin = lineBegin - 5;
+                int showCodeBegin = lineBeginInt - 5;
                 if (showCodeBegin < 0) {
                     showCodeBegin = 0;
                 }
-                int showCodeEnd = lineEnd + 5;
+                int showCodeEnd = lineEndInt + 5;
                 if (showCodeEnd > lines.length) {
                     showCodeEnd = lines.length;
                 }
                 for (int j = showCodeBegin-1; j < showCodeEnd; j++) {
-                    if (j == lineBegin-1) {
-                        code.append(">>> \n").append(lines[j]).append("\n");
-                    } else if (j == lineEnd) {
-                        code.append("<<< \n").append(lines[j]).append("\n");
+                    if (j == lineBeginInt-1) {
+                        code.append(">>> var: ").append(valuesListEntry.get(i + 2)).append("\n").append(lines[j]).append("\n");
+                    } else if (j == lineEndInt) {
+                        code.append("<<< var: ").append(valuesListEntry.get(i + 2)).append("\n").append(lines[j]).append("\n");
                     } else
                         code.append(lines[j]).append("\n");
                 }
