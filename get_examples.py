@@ -22,6 +22,7 @@ for item in repos_json["items"]:
 
 
 repo = "elasticsearch/server/src/main"
+repo = r'skywalking'
 
 # Structure of find_examples.json:
 # key = distance
